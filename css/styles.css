@@ -1,0 +1,29 @@
+*{
+  margin:0;
+  padding:0;
+}
+
+body{
+  overflow: hidden;
+}
+
+#controlls{
+  height: 40px;
+  position: fixed;
+  right: 4px;
+  top: 4px;
+  width: 85px;
+  z-index:1;
+}
+
+#controlls button{
+  height: 40px;
+  width: 40px;
+}
+
+canvas{
+  position: absolute; 
+  top: 0px;
+  left: 0px;
+}
+

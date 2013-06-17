@@ -1,0 +1,89 @@
+<html>
+<head>
+  <title>E2KS Test</title>
+  <link type="text/css" rel="stylesheet" media="all" href="css/styles.css" />
+  <script src="js/processing.min.js"></script>
+  <script src="js/play_stop.js"></script>
+  <script type="text/processing" data-processing-target="targetcanvas">
+    /* @pjs preload="images/clouds.jpg"; */
+    int numBalloons = 20;
+    ArrayList balloons;
+    // Should be exactly the same size as background image
+    canvas_width = 1920;
+    canvas_height = 1200;    
+    
+    timer = second();
+    void setup(){
+      size(canvas_width, canvas_height);
+      noStroke();
+      smooth();
+      cursor(CROSS);
+      frameRate(60);
+      balloons = new ArrayList();
+      for(int i = 0; i < numBalloons; i++) addBalloon(); // fill in balloons for start
+      bg = loadImage("images/clouds.jpg");
+    }
+
+    void draw(){
+      background(bg);
+      for(int i = balloons.size()-1; i >= 0; i--) {
+        Balloon balloon = (Balloon) balloons.get(i);
+        balloon.move(i);
+        balloon.display(i); 
+      }
+      // Generate new balloon once per second with random delay
+      if(timer != second()){
+        timer = second();
+        setTimeout(addBalloon(), random(1000, 10000));
+      }
+    }
+
+    class Balloon {
+      float x, y, d;
+      int R, G, B; // RGB parts
+
+      Balloon(int xin, int yin, int din, int r_rgb, int g_rgb, int b_rgb) {
+        x = xin;
+        y = yin;
+        d = din;
+        R = r_rgb;
+        G = g_rgb;
+        B = b_rgb;
+      } 
+      
+      void move(i) {
+        y -= 1; // going up!
+        if( y < (0 - d) ) balloons.remove(i); // flew too high
+      }
+
+      void display(i) {
+        Balloon balloon = (Balloon) balloons.get(i);
+        fill(balloon.R, balloon.G, balloon.B, 200);
+        ellipse(x, y, d, d);
+      }
+    }
+    void mousePressed(){
+      for(int i = balloons.size()-1; i >= 0; i--) {
+        Balloon balloon = (Balloon) balloons.get(i);
+        if( (sq(mouseX - balloon.x) + sq(mouseY - balloon.y) <= sq(balloon.d/2)) && can_shot ) balloons.remove(i); // delete balloon if hit
+      }
+    }
+    void addBalloon(){
+      balloons.add( new Balloon(random(canvas_width), // X center coord
+                                random(canvas_height, canvas_height + 300), // Y center coord
+                                random(50, 150),  // Diameter
+                                random(0, 256),   // R(RGB)
+                                random(0, 256),   // G(RGB)
+                                random(0, 256)) );// B(RGB)
+    }
+  </script>
+</head>
+<body>
+  <div id="controlls">
+    <button onclick="startSketch();" title="Start"><img src="images/play_icon.png" /></button>
+    <button onclick="stopSketch();" title="Stop"><img src="images/pause_icon.png" /></button>    
+  </div>
+  <canvas id="targetcanvas"></canvas>
+</body>
+</html>
+
