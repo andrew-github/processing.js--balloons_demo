@@ -69,9 +69,22 @@
       }
     }
     void addBalloon(){
-      balloons.add( new Balloon(random(canvas_width), // X center coord
-                                random(canvas_height, canvas_height + 300), // Y center coord
-                                random(50, 150),  // Diameter
+      int x,y,d;
+      ok = false;
+      while(!ok){
+        ok = true;
+        x = random(canvas_width);
+        y = random(canvas_height, canvas_height + 300);
+        d = random(50, 150);
+        for(int i = balloons.size()-1; i >= 0; i--) {
+          Balloon balloon = (Balloon) balloons.get(i);
+          if( (balloon.d + d)/2 > sqrt( sq(balloon.x - x) + sq(balloon.y - y) ) ) ok = false;
+        }
+      }
+      
+      balloons.add( new Balloon(x, // X center coord
+                                y, // Y center coord
+                                d, // Diameter
                                 random(0, 256),   // R(RGB)
                                 random(0, 256),   // G(RGB)
                                 random(0, 256)) );// B(RGB)
